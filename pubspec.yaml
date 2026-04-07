@@ -35,6 +35,33 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
 
+    # JSON serialization
+  json_annotation: ^4.8.1
+
+  # Shared preferences
+  shared_preferences: ^2.2.0
+
+   # HTTP requests
+  http: ^1.1.0
+
+  # ESP Touch (SmartConfig)
+  esp_smartconfig: ^3.0.0
+
+  # Permission handling
+  permission_handler: ^11.0.0
+
+  # Network info
+  network_info_plus: ^5.0.0
+
+  # Device info
+  device_info_plus: ^9.1.0
+
+  mobile_scanner: ^4.0.0
+
+  wifi_iot: ^0.3.18
+
+  fluttertoast: ^8.2.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
