@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.example.esp_connect"
-    compileSdk = flutter.compileSdkVersion
+    compileSdk = 36
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
@@ -24,8 +24,8 @@ android {
         applicationId = "com.example.esp_connect"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
+        minSdk = flutter.minSdkVersion  // Явно указываем 21 (Android 5.0)
+        targetSdk = 36  // Явно указываем 34
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }

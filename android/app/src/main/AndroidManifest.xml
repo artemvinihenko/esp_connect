@@ -10,14 +10,9 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <!-- ========== ДЛЯ ANDROID 12+ (API 31+) ========== -->
     <uses-permission android:name="android.permission.NEARBY_WIFI_DEVICES" />
-    <!-- ========== ДЛЯ КАМЕРЫ (QR-КОД) ========== -->
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-feature android:name="android.hardware.camera" android:required="true" />
-    <uses-feature android:name="android.hardware.camera.autofocus"
-        android:required="false" />
 
     <application
-        android:label="ESP-конетктор"
+        android:label="ESP конфигуратор"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
