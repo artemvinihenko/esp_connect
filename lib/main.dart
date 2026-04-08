@@ -7,7 +7,9 @@ import 'screens/help_tab.dart';
 import 'utils/toast_utils.dart';
 
 
+
 void main() {
+  WidgetsFlutterBinding.ensureInitialized(); // Добавьте эту строку
   runApp(const MyApp());
 }
 
@@ -22,10 +24,8 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         useMaterial3: true,
       ),
-      // iOS стиль
-      darkTheme: ThemeData.dark(),
-      themeMode: ThemeMode.system,
       home: const MainTabView(),
+      debugShowCheckedModeBanner: false, // Убирает баннер Debug
     );
   }
 }
@@ -40,25 +40,30 @@ class MainTabView extends StatefulWidget {
 class _MainTabViewState extends State<MainTabView> with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final GlobalKey<ScaffoldMessengerState> _scaffoldKey = GlobalKey<ScaffoldMessengerState>();
+  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
+    _init();
+  }
+
+  Future<void> _init() async {
     _tabController = TabController(length: 3, vsync: this);
-    _requestPermissions();
     ToastUtils.setScaffoldKey(_scaffoldKey);
+    await _requestPermissions();
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   Future<void> _requestPermissions() async {
-    // Запрашиваем разрешения для разных платформ
-    if (Theme.of(context).platform == TargetPlatform.iOS) {
-      // Для iOS
-      await Permission.locationWhenInUse.request();
-      await Permission.nearbyWifiDevices.request();
-    } else {
-      // Для Android
+    try {
+      // Запрашиваем разрешения последовательно
       await Permission.location.request();
       await Permission.nearbyWifiDevices.request();
+    } catch (e) {
+      debugPrint('Error requesting permissions: $e');
     }
   }
 
@@ -70,6 +75,22 @@ class _MainTabViewState extends State<MainTabView> with SingleTickerProviderStat
 
   @override
   Widget build(BuildContext context) {
+    if (_isLoading) {
+      return Scaffold(
+        key: _scaffoldKey,
+        body: const Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CircularProgressIndicator(),
+              SizedBox(height: 16),
+              Text('Загрузка...'),
+            ],
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(

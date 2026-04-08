@@ -356,7 +356,7 @@ class _SmartConfigTabState extends State<SmartConfigTab> {
 
   Widget _buildHintCard() {
     return Card(
-      color: Colors.grey.shade50,
+      color: const Color.fromARGB(255, 228, 221, 221),
       child: Padding(
         padding: const EdgeInsets.all(12.0),
         child: Column(
