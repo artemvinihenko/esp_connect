@@ -1,17 +1,22 @@
-# esp_connect
+# ESP Конфигуратор
 
-A new Flutter project.
+[![Build APK](https://github.com/YOUR_USERNAME/YOUR_REPO/actions/workflows/build-apk.yml/badge.svg)](https://github.com/YOUR_USERNAME/YOUR_REPO/actions/workflows/build-apk.yml)
 
-## Getting Started
+Приложение для настройки ESP8266 и ESP32 через SmartConfig и AP режим.
 
-This project is a starting point for a Flutter application.
+## Скачать APK
 
-A few resources to get you started if this is your first Flutter project:
+Перейдите во вкладку **Actions** → выберите **Build APK** → скачайте артефакт.
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+## Функции
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- SmartConfig настройка
+- AP режим настройки
+- Выбор Wi-Fi сети из списка
+- Поддержка Android
+
+## Разработка
+
+```bash
+flutter pub get
+flutter run

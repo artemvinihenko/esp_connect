@@ -18,6 +18,23 @@ migrate_working_dir/
 *.iws
 .idea/
 
+# iOS
+**/ios/Flutter/App.framework
+**/ios/Flutter/Flutter.framework
+**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/ephemeral/
+**/ios/ServiceDefinitions.json
+**/ios/Pods/
+**/ios/Podfile.lock
+**/ios/.symlinks/
+**/ios/*.xcworkspace/xcuserdata/
+**/ios/*.xcworkspace/xcshareddata/
+**/ios/*.xcodeproj/project.xcworkspace/xcuserdata/
+**/ios/*.xcodeproj/xcuserdata/
+**/ios/*.app
+**/ios/*.ipa
+**/ios/.generated/
+
 # The .vscode folder contains launch configuration and tasks you configure in
 # VS Code which you may wish to be included in version control, so this line
 # is commented out by default.
