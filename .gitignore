@@ -60,3 +60,8 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Ключи подписи
+*.jks
+*.keystore
+android/app/key.properties
