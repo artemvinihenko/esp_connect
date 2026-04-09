@@ -62,8 +62,8 @@ class SmartConfigHelpContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16.0),
+    return const SingleChildScrollView(
+      padding: EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -74,7 +74,7 @@ class SmartConfigHelpContent extends StatelessWidget {
             icon: Icons.info_outline,
             color: Colors.blue,
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           CodeViewer(
             title: 'Код для ESP8266:',
             code: '''
@@ -109,7 +109,7 @@ void loop() {
   // Ваш код здесь
 }''',
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           CodeViewer(
             title: 'Код для ESP32:',
             code: '''
@@ -144,7 +144,7 @@ void loop() {
   // Ваш код здесь
 }''',
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           InfoCard(
             title: 'Важно!',
             content:
@@ -163,8 +163,8 @@ class APModeHelpContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16.0),
+    return const SingleChildScrollView(
+      padding: EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -175,7 +175,7 @@ class APModeHelpContent extends StatelessWidget {
             icon: Icons.info_outline,
             color: Colors.blue,
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           CodeViewer(
             title: 'Код для ESP8266 (AP + HTTP сервер):',
             code: '''
@@ -218,7 +218,7 @@ void loop() {
   server.handleClient();
 }''',
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           CodeViewer(
             title: 'Код для ESP32 (AP + HTTP сервер):',
             code: '''
@@ -261,7 +261,7 @@ void loop() {
   server.handleClient();
 }''',
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           InfoCard(
             title: 'Важно!',
             content:
@@ -269,7 +269,7 @@ void loop() {
             icon: Icons.warning,
             color: Colors.amber,
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           InfoCard(
             title: 'Необходимые библиотеки',
             content:
@@ -288,8 +288,8 @@ class BLEHelpContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16.0),
+    return const SingleChildScrollView(
+      padding: EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -299,7 +299,7 @@ class BLEHelpContent extends StatelessWidget {
             icon: Icons.bluetooth,
             color: Colors.blue,
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           CodeViewer(
             title: 'Код для ESP32 (BLE режим):',
             code: '''
@@ -386,7 +386,7 @@ void loop() {
   delay(100);
 }''',
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           InfoCard(
             title: 'Важно!',
             content: '• BLE режим работает только на ESP32 (ESP8266 не поддерживает BLE)\n'
@@ -396,7 +396,7 @@ void loop() {
             icon: Icons.warning,
             color: Colors.amber,
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           InfoCard(
             title: 'Необходимые библиотеки',
             content: '• BLEDevice\n'

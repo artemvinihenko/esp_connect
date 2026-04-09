@@ -359,13 +359,13 @@ class _SmartConfigTabState extends State<SmartConfigTab> {
   }
 
   Widget _buildHintCard() {
-    return Card(
-      color: const Color.fromARGB(255, 228, 221, 221),
+    return const Card(
+      color: Color.fromARGB(255, 228, 221, 221),
       child: Padding(
-        padding: const EdgeInsets.all(12.0),
+        padding: EdgeInsets.all(12.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [
+          children: [
             Text(
               '📱 Инструкция:',
               style: TextStyle(fontWeight: FontWeight.bold),

@@ -473,9 +473,9 @@ class _APConfigTabState extends State<APConfigTab> {
                 color: Colors.grey.shade100,
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: Column(
+              child: const Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
+                children: [
                   Text(
                     '📱 Инструкция:',
                     style: TextStyle(fontWeight: FontWeight.bold),

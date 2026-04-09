@@ -644,9 +644,9 @@ class _BleConfigTabState extends State<BleConfigTab> {
                 color: Colors.grey.shade100,
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: Column(
+              child: const Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
+                children: [
                   Text(
                     '📱 Инструкция для BLE режима:',
                     style: TextStyle(fontWeight: FontWeight.bold),
