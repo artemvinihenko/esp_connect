@@ -5,11 +5,11 @@ import 'screens/smart_config_tab.dart';
 import 'screens/ap_config_tab.dart';
 import 'screens/help_tab.dart';
 import 'utils/toast_utils.dart';
-
+import 'screens/ble_config_tab.dart';  // 
 
 
 void main() {
-  WidgetsFlutterBinding.ensureInitialized(); // Добавьте эту строку
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       home: const MainTabView(),
-      debugShowCheckedModeBanner: false, // Убирает баннер Debug
+      debugShowCheckedModeBanner: false,
     );
   }
 }
@@ -49,7 +49,7 @@ class _MainTabViewState extends State<MainTabView> with SingleTickerProviderStat
   }
 
   Future<void> _init() async {
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 4, vsync: this); // 4 вкладки
     ToastUtils.setScaffoldKey(_scaffoldKey);
     await _requestPermissions();
     setState(() {
@@ -59,9 +59,11 @@ class _MainTabViewState extends State<MainTabView> with SingleTickerProviderStat
 
   Future<void> _requestPermissions() async {
     try {
-      // Запрашиваем разрешения последовательно
       await Permission.location.request();
       await Permission.nearbyWifiDevices.request();
+      await Permission.bluetooth.request();      // Добавлено
+      await Permission.bluetoothScan.request();   // Добавлено
+      await Permission.bluetoothConnect.request(); // Добавлено
     } catch (e) {
       debugPrint('Error requesting permissions: $e');
     }
@@ -102,6 +104,7 @@ class _MainTabViewState extends State<MainTabView> with SingleTickerProviderStat
           tabs: const [
             Tab(icon: Icon(Icons.wifi), text: 'SmartConfig'),
             Tab(icon: Icon(Icons.settings_ethernet), text: 'AP режим'),
+            Tab(icon: Icon(Icons.bluetooth), text: 'BLE режим'),
             Tab(icon: Icon(Icons.help_outline), text: 'Помощь'),
           ],
         ),
@@ -111,6 +114,7 @@ class _MainTabViewState extends State<MainTabView> with SingleTickerProviderStat
         children: const [
           SmartConfigTab(),
           APConfigTab(),
+          BleConfigTab(),
           HelpTab(),
         ],
       ),

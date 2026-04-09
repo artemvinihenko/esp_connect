@@ -18,18 +18,18 @@ class _APConfigTabState extends State<APConfigTab> {
   final _targetSsidController = TextEditingController();
   final _targetPasswordController = TextEditingController();
   final _portController = TextEditingController(text: '80');
-  
+
   bool _isConnected = false;
   bool _isLoading = false;
   String _responseMessage = '';
   String _currentSsid = '';
   Timer? _connectionCheckTimer;
-  
+
   @override
   void initState() {
     super.initState();
     _checkCurrentConnection();
-    
+
     _connectionCheckTimer = Timer.periodic(const Duration(seconds: 2), (timer) {
       if (mounted) {
         _checkCurrentConnection();
@@ -38,7 +38,7 @@ class _APConfigTabState extends State<APConfigTab> {
       }
     });
   }
-  
+
   @override
   void dispose() {
     _connectionCheckTimer?.cancel();
@@ -48,14 +48,18 @@ class _APConfigTabState extends State<APConfigTab> {
     _portController.dispose();
     super.dispose();
   }
-  
+
   Future<void> _checkCurrentConnection() async {
     final ssid = await WifiService.getCurrentSSID();
-    if (ssid != null && ssid.isNotEmpty && ssid != 'null') {
+    if (ssid != null &&
+        ssid.isNotEmpty &&
+        ssid != 'null' &&
+        ssid != '<unknown ssid>') {
       setState(() {
         _currentSsid = ssid;
         // Проверяем, подключены ли к ESP (SSID обычно начинается с ESP_)
-        _isConnected = ssid.contains('ESP_') || ssid.contains('esp_');
+        // _isConnected = ssid.contains('ESP_') || ssid.contains('esp_');
+        _isConnected = true;
       });
     } else {
       setState(() {
@@ -64,29 +68,31 @@ class _APConfigTabState extends State<APConfigTab> {
       });
     }
   }
-  
+
   Future<void> _openWifiSettings() async {
     await WifiService.openWifiSettings();
-    ToastUtils.showInfo('Подключитесь к Wi-Fi сети ESP, затем вернитесь в приложение');
+    ToastUtils.showInfo(
+      'Подключитесь к Wi-Fi сети ESP, затем вернитесь в приложение',
+    );
   }
-  
+
   Future<void> _selectWifiNetwork() async {
     // Сканируем сети
     setState(() {
       _isLoading = true;
     });
-    
+
     final networks = await WifiScanHelper.scanNetworks();
-    
+
     setState(() {
       _isLoading = false;
     });
-    
+
     if (networks.isEmpty) {
       ToastUtils.showError('Нет доступных Wi-Fi сетей');
       return;
     }
-    
+
     // Показываем диалог выбора сети
     showModalBottomSheet(
       context: context,
@@ -135,7 +141,9 @@ class _APConfigTabState extends State<APConfigTab> {
                               _targetSsidController.text = network.ssid;
                               _targetPasswordController.clear();
                             });
-                            ToastUtils.showSuccess('Выбрана сеть: ${network.ssid}');
+                            ToastUtils.showSuccess(
+                              'Выбрана сеть: ${network.ssid}',
+                            );
                           }
                         },
                       );
@@ -150,7 +158,7 @@ class _APConfigTabState extends State<APConfigTab> {
       },
     );
   }
-  
+
   void _showPasswordDialog(String ssid) {
     final passwordController = TextEditingController();
     showDialog(
@@ -193,61 +201,67 @@ class _APConfigTabState extends State<APConfigTab> {
       ),
     );
   }
-  
+
   Color _getSignalColor(int strength) {
     if (strength >= 70) return Colors.green;
     if (strength >= 40) return Colors.orange;
     return Colors.red;
   }
-  
+
   Future<void> _sendConfig() async {
     if (!_isConnected) {
       ToastUtils.showError('Сначала подключитесь к Wi-Fi сети ESP');
       _openWifiSettings();
       return;
     }
-    
+
     final ssid = _targetSsidController.text.trim();
     if (ssid.isEmpty) {
       ToastUtils.showError('Выберите Wi-Fi сеть для ESP');
       return;
     }
-    
+
     setState(() {
       _isLoading = true;
       _responseMessage = 'Отправка конфигурации на ESP...';
     });
-    
+
     try {
       final configData = {
         'ssid': ssid,
         'password': _targetPasswordController.text.trim(),
       };
-      
-      final url = Uri.parse('http://${_deviceIpController.text}:${_portController.text}/config');
-      
-      final response = await http.post(
-        url,
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-        body: jsonEncode(configData),
-      ).timeout(const Duration(seconds: 10));
-      
+
+      final url = Uri.parse(
+        'http://${_deviceIpController.text}:${_portController.text}/config',
+      );
+
+      final response = await http
+          .post(
+            url,
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+            },
+            body: jsonEncode(configData),
+          )
+          .timeout(const Duration(seconds: 10));
+
       if (response.statusCode == 200 && mounted) {
         setState(() {
-          _responseMessage = '✅ Конфигурация отправлена успешно! ESP перезагружается...';
+          _responseMessage =
+              '✅ Конфигурация отправлена успешно! ESP перезагружается...';
           _isLoading = false;
         });
         ToastUtils.showSuccess('Настройки отправлены на ESP');
-        
+
         // Очищаем поля
         _targetSsidController.clear();
         _targetPasswordController.clear();
       } else if (mounted) {
         setState(() {
-          _responseMessage = '❌ Ошибка ${response.statusCode}: ${response.body}';
+          _responseMessage =
+              '❌ Ошибка ${response.statusCode}: ${response.body}';
           _isLoading = false;
         });
         ToastUtils.showError('Ошибка отправки');
@@ -262,7 +276,7 @@ class _APConfigTabState extends State<APConfigTab> {
       }
     }
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -275,7 +289,9 @@ class _APConfigTabState extends State<APConfigTab> {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: _isConnected ? Colors.green.shade50 : Colors.orange.shade50,
+                color: _isConnected
+                    ? Colors.green.shade50
+                    : Colors.orange.shade50,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Row(
@@ -291,7 +307,7 @@ class _APConfigTabState extends State<APConfigTab> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          _isConnected ? '✅ Подключено к ESP' : '⚠️ Не подключено к ESP',
+                          _isConnected ? '✅ Подключено' : '⚠️ Не подключено',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: _isConnected ? Colors.green : Colors.orange,
@@ -304,7 +320,7 @@ class _APConfigTabState extends State<APConfigTab> {
                           ),
                         if (!_isConnected)
                           const Text(
-                            'Нажмите кнопку "Настройки Wi-Fi"',
+                            'Нажмите кнопку "Выбрать сеть ESP"',
                             style: TextStyle(fontSize: 12),
                           ),
                       ],
@@ -313,17 +329,22 @@ class _APConfigTabState extends State<APConfigTab> {
                   ElevatedButton(
                     onPressed: _openWifiSettings,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: _isConnected ? Colors.green : Colors.blue,
+                      backgroundColor: _isConnected
+                          ? Colors.green
+                          : Colors.blue,
                       foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
                     ),
-                    child: const Text('Настройки Wi-Fi'),
+                    child: const Text('Выбрать сеть ESP'),
                   ),
                 ],
               ),
             ),
             const SizedBox(height: 24),
-            
+
             // Настройки ESP
             const Text(
               'Настройки ESP',
@@ -351,7 +372,7 @@ class _APConfigTabState extends State<APConfigTab> {
               keyboardType: TextInputType.number,
             ),
             const SizedBox(height: 24),
-            
+
             // Выбор Wi-Fi сети для ESP
             const Text(
               'Ваша Wi-Fi сеть',
@@ -378,7 +399,10 @@ class _APConfigTabState extends State<APConfigTab> {
                   icon: const Icon(Icons.search),
                   label: const Text('Выбрать'),
                   style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 15,
+                    ),
                   ),
                 ),
               ],
@@ -394,7 +418,7 @@ class _APConfigTabState extends State<APConfigTab> {
               obscureText: true,
             ),
             const SizedBox(height: 24),
-            
+
             // Кнопка отправки
             ElevatedButton.icon(
               onPressed: _isLoading ? null : _sendConfig,
@@ -408,20 +432,26 @@ class _APConfigTabState extends State<APConfigTab> {
               ),
             ),
             const SizedBox(height: 16),
-            
+
             // Сообщение о статусе
             if (_responseMessage.isNotEmpty)
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: _responseMessage.contains('✅') ? Colors.green.shade50 : Colors.red.shade50,
+                  color: _responseMessage.contains('✅')
+                      ? Colors.green.shade50
+                      : Colors.red.shade50,
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Row(
                   children: [
                     Icon(
-                      _responseMessage.contains('✅') ? Icons.check_circle : Icons.error,
-                      color: _responseMessage.contains('✅') ? Colors.green : Colors.red,
+                      _responseMessage.contains('✅')
+                          ? Icons.check_circle
+                          : Icons.error,
+                      color: _responseMessage.contains('✅')
+                          ? Colors.green
+                          : Colors.red,
                     ),
                     const SizedBox(width: 12),
                     Expanded(child: Text(_responseMessage)),
@@ -435,7 +465,7 @@ class _APConfigTabState extends State<APConfigTab> {
                 ),
               ),
             const SizedBox(height: 16),
-            
+
             // Инструкция
             Container(
               padding: const EdgeInsets.all(12),

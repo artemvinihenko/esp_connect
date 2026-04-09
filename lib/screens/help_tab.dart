@@ -15,7 +15,7 @@ class _HelpTabState extends State<HelpTab> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 3, vsync: this); // 3 вкладки
   }
 
   @override
@@ -35,6 +35,7 @@ class _HelpTabState extends State<HelpTab> with SingleTickerProviderStateMixin {
             tabs: const [
               Tab(icon: Icon(Icons.wifi_tethering), text: 'SmartConfig'),
               Tab(icon: Icon(Icons.settings_ethernet), text: 'AP режим'),
+              Tab(icon: Icon(Icons.bluetooth), text: 'BLE режим'),
             ],
             labelColor: Colors.blue,
             unselectedLabelColor: Colors.grey,
@@ -44,7 +45,11 @@ class _HelpTabState extends State<HelpTab> with SingleTickerProviderStateMixin {
         Expanded(
           child: TabBarView(
             controller: _tabController,
-            children: const [SmartConfigHelpContent(), APModeHelpContent()],
+            children: const [
+              SmartConfigHelpContent(),
+              APModeHelpContent(),
+              BLEHelpContent(),
+            ],
           ),
         ),
       ],
@@ -269,6 +274,136 @@ void loop() {
             title: 'Необходимые библиотеки',
             content:
                 '• ESP8266: ESP8266WiFi, ESP8266WebServer, ArduinoJson\n• ESP32: WiFi, WebServer, ArduinoJson\n• Установите ArduinoJson версии 6.x',
+            icon: Icons.library_books,
+            color: Colors.green,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class BLEHelpContent extends StatelessWidget {
+  const BLEHelpContent({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          InfoCard(
+            title: 'Что такое BLE режим?',
+            content: 'BLE (Bluetooth Low Energy) режим позволяет настраивать ESP32 через Bluetooth. Телефон подключается к ESP32 по BLE и отправляет SSID и пароль Wi-Fi. Этот метод не требует Wi-Fi на телефоне и работает даже если телефон не подключен к сети.',
+            icon: Icons.bluetooth,
+            color: Colors.blue,
+          ),
+          const SizedBox(height: 16),
+          CodeViewer(
+            title: 'Код для ESP32 (BLE режим):',
+            code: '''
+#include <BLEDevice.h>
+#include <BLEUtils.h>
+#include <BLEServer.h>
+#include <WiFi.h>
+
+#define SERVICE_UUID "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
+#define CHARACTERISTIC_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a8"
+
+String receivedData = "";
+String targetSSID = "";
+String targetPassword = "";
+
+class MyCallbacks: public BLECharacteristicCallbacks {
+  void onWrite(BLECharacteristic *pCharacteristic) {
+    std::string value = pCharacteristic->getValue();
+    receivedData = String(value.c_str());
+    
+    Serial.print("Получено: ");
+    Serial.println(receivedData);
+    
+    // Разделяем SSID и пароль
+    int separator = receivedData.indexOf('|');
+    if (separator > 0) {
+      targetSSID = receivedData.substring(0, separator);
+      targetPassword = receivedData.substring(separator + 1);
+      
+      Serial.print("SSID: ");
+      Serial.println(targetSSID);
+      Serial.print("Password: ");
+      Serial.println(targetPassword);
+      
+      // Подключаемся к Wi-Fi
+      WiFi.begin(targetSSID.c_str(), targetPassword.c_str());
+      
+      int attempts = 0;
+      while (WiFi.status() != WL_CONNECTED && attempts < 20) {
+        delay(1000);
+        attempts++;
+        Serial.print(".");
+      }
+      
+      if (WiFi.status() == WL_CONNECTED) {
+        Serial.println("\\nПодключено к Wi-Fi!");
+        Serial.print("IP: ");
+        Serial.println(WiFi.localIP());
+      } else {
+        Serial.println("\\nОшибка подключения");
+      }
+      
+      delay(2000);
+      ESP.restart();
+    }
+  }
+};
+
+void setup() {
+  Serial.begin(115200);
+  
+  // Инициализация BLE
+  BLEDevice::init("ESP32_Config");
+  BLEServer *pServer = BLEDevice::createServer();
+  BLEService *pService = pServer->createService(SERVICE_UUID);
+  
+  BLECharacteristic *pCharacteristic = pService->createCharacteristic(
+    CHARACTERISTIC_UUID,
+    BLECharacteristic::PROPERTY_WRITE
+  );
+  
+  pCharacteristic->setCallbacks(new MyCallbacks());
+  pService->start();
+  
+  BLEAdvertising *pAdvertising = pServer->getAdvertising();
+  pAdvertising->start();
+  
+  Serial.println("BLE режим запущен");
+  Serial.print("Имя устройства: ESP32_Config");
+  Serial.println("Ожидание подключения...");
+}
+
+void loop() {
+  delay(100);
+}''',
+          ),
+          const SizedBox(height: 16),
+          InfoCard(
+            title: 'Важно!',
+            content: '• BLE режим работает только на ESP32 (ESP8266 не поддерживает BLE)\n'
+                     '• Убедитесь что Bluetooth на телефоне включен\n'
+                     '• ESP32 должен быть в радиусе действия Bluetooth\n'
+                     '• После отправки настроек ESP32 перезагрузится и подключится к Wi-Fi',
+            icon: Icons.warning,
+            color: Colors.amber,
+          ),
+          const SizedBox(height: 16),
+          InfoCard(
+            title: 'Необходимые библиотеки',
+            content: '• BLEDevice\n'
+                     '• BLEUtils\n'
+                     '• BLEServer\n'
+                     '• WiFi\n\n'
+                     'Все библиотеки входят в стандартный набор ESP32 в Arduino IDE',
             icon: Icons.library_books,
             color: Colors.green,
           ),

@@ -119,7 +119,11 @@ class _SmartConfigTabState extends State<SmartConfigTab> {
 
       final ssid = await WiFiForIoTPlugin.getSSID();
 
-      if (ssid != null && ssid.isNotEmpty && ssid != 'null' && ssid != '0x') {
+      if (ssid != null &&
+          ssid.isNotEmpty &&
+          ssid != 'null' &&
+          ssid != '0x' &&
+          ssid != '<unknown ssid>') {
         final cleanSsid = ssid.replaceAll('"', '');
         setState(() {
           _currentSsid = cleanSsid;
