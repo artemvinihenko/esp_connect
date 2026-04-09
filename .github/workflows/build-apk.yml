@@ -2,10 +2,10 @@ name: Build APK
 
 on:
   push:
-    branches: [ main, master ]
+    branches: []  # Пустой список - не запускается при пуше
   pull_request:
-    branches: [ main, master ]
-  workflow_dispatch:
+    branches: []  # Пустой список - не запускается при PR
+  workflow_dispatch:  # Только ручной запуск
 
 jobs:
   build:
