@@ -13,12 +13,14 @@
   <key>CFBundleName</key>
   <string>App</string>
   <key>CFBundlePackageType</key>
-  <string>FMWK</string>
+  <string>FMWK</key>
   <key>CFBundleShortVersionString</key>
   <string>1.0</string>
   <key>CFBundleSignature</key>
   <string>????</string>
   <key>CFBundleVersion</key>
   <string>1.0</string>
+  <key>MinimumOSVersion</key>
+  <string>13.0</string>  <!-- Измените с 12.0 на 13.0 -->
 </dict>
 </plist>
