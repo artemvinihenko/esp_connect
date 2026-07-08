@@ -379,7 +379,7 @@ class _SmartConfigTabState extends State<SmartConfigTab> {
             Text('6. Дождитесь подключения (до 60 сек)'),
             SizedBox(height: 8),
             Text(
-              'ℹ️ SmartConfig настраивает ВСЕ ESP в сети',
+              'ℹ️ SmartConfig настраивает ВСЕ ESP в сети ',
               style: TextStyle(fontSize: 12),
             ),
           ],
